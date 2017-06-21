@@ -16,9 +16,9 @@ export class NodeModulesDependenciesBuilder implements INodeModulesDependenciesB
 		const packageJsonContent = this.$fs.readJson(projectPackageJsonPath);
 		const dependencies = packageJsonContent && packageJsonContent.dependencies;
 
-		let resolvedDependencies: IDependencyData[] = [];
+		const resolvedDependencies: IDependencyData[] = [];
 
-		let queue: IDependencyDescription[] = _.keys(dependencies)
+		const queue: IDependencyDescription[] = _.keys(dependencies)
 			.map(dependencyName => ({
 				parentDir: projectPath,
 				name: dependencyName,
@@ -47,7 +47,18 @@ export class NodeModulesDependenciesBuilder implements INodeModulesDependenciesB
 			}
 		}
 
-		return resolvedDependencies;
+		return this.distinctDependencies(resolvedDependencies);
+	}
+
+	private distinctDependencies(dependencies: IDependencyData[]): IDependencyData[] {
+		const depsDictionary = dependencies.reduce((dict, dep) => {
+			const collision = dict[dep.name];
+			if (!collision || collision.depth > dep.depth) {
+				dict[dep.name] = dep;
+			}
+			return dict;
+		}, <{ [key: string]: IDependencyData}>{});
+		return Object.keys(depsDictionary).map(key => depsDictionary[key]);
 	}
 
 	private findModule(rootNodeModulesPath: string, parentModulePath: string, name: string, depth: number, resolvedDependencies: IDependencyData[]): IDependencyData {
