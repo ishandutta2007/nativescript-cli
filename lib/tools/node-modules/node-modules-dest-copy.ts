@@ -141,7 +141,7 @@ export class NpmPluginPrepare {
 		return result;
 	}
 
-	public async preparePlugins(dependencies: IDependencyData[], platform: string, projectData: IProjectData): Promise<void> {
+	public async preparePlugins(dependencies: IDependencyData[], platform: string, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void> {
 		if (_.isEmpty(dependencies) || this.allPrepared(dependencies, platform, projectData)) {
 			return;
 		}
@@ -151,7 +151,7 @@ export class NpmPluginPrepare {
 			const dependency = dependencies[dependencyKey];
 			let isPlugin = !!dependency.nativescript;
 			if (isPlugin) {
-				await this.$pluginsService.prepare(dependency, platform, projectData);
+				await this.$pluginsService.prepare(dependency, platform, projectData, projectFilesConfig);
 			}
 		}
 

@@ -53,7 +53,7 @@ export abstract class PlatformLiveSyncServiceBase {
 		};
 	}
 
-	public async liveSyncWatchAction(device: Mobile.IDevice, liveSyncInfo: ILiveSyncWatchInfo): Promise<ILiveSyncResultInfo> {
+	public async liveSyncWatchAction(device: Mobile.IDevice, liveSyncInfo: ILiveSyncWatchInfo, projectFilesConfig: IProjectFilesConfig): Promise<ILiveSyncResultInfo> {
 		const projectData = liveSyncInfo.projectData;
 		const syncInfo = _.merge<IFullSyncInfo>({ device, watch: true }, liveSyncInfo);
 		const deviceAppData = await this.getAppData(syncInfo);
@@ -61,7 +61,7 @@ export abstract class PlatformLiveSyncServiceBase {
 		let modifiedLocalToDevicePaths: Mobile.ILocalToDevicePathData[] = [];
 		if (liveSyncInfo.filesToSync.length) {
 			const filesToSync = liveSyncInfo.filesToSync;
-			const mappedFiles = _.map(filesToSync, filePath => this.$projectFilesProvider.mapFilePath(filePath, device.deviceInfo.platform, projectData));
+			const mappedFiles = _.map(filesToSync, filePath => this.$projectFilesProvider.mapFilePath(filePath, device.deviceInfo.platform, projectData, projectFilesConfig));
 
 			// Some plugins modify platforms dir on afterPrepare (check nativescript-dev-sass) - we want to sync only existing file.
 			const existingFiles = mappedFiles.filter(m => this.$fs.exists(m));
@@ -85,7 +85,7 @@ export abstract class PlatformLiveSyncServiceBase {
 			const filePaths = liveSyncInfo.filesToRemove;
 			const platformData = this.$platformsData.getPlatformData(device.deviceInfo.platform, projectData);
 
-			const mappedFiles = _.map(filePaths, filePath => this.$projectFilesProvider.mapFilePath(filePath, device.deviceInfo.platform, projectData));
+			const mappedFiles = _.map(filePaths, filePath => this.$projectFilesProvider.mapFilePath(filePath, device.deviceInfo.platform, projectData, projectFilesConfig));
 			const projectFilesPath = path.join(platformData.appDestinationDirectoryPath, APP_FOLDER_NAME);
 			const localToDevicePaths = await this.$projectFilesManager.createLocalToDevicePaths(deviceAppData, projectFilesPath, mappedFiles, []);
 			modifiedLocalToDevicePaths.push(...localToDevicePaths);

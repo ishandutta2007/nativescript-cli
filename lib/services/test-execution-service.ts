@@ -33,7 +33,7 @@ class TestExecutionService implements ITestExecutionService {
 
 	public platform: string;
 
-	public async startTestRunner(platform: string, projectData: IProjectData): Promise<void> {
+	public async startTestRunner(platform: string, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void> {
 		this.platform = platform;
 		this.$options.justlaunch = true;
 		await new Promise<void>((resolve, reject) => {
@@ -114,7 +114,7 @@ class TestExecutionService implements ITestExecutionService {
 
 					const liveSyncInfo: ILiveSyncInfo = { projectDir: projectData.projectDir, skipWatcher: !this.$options.watch || this.$options.justlaunch, watchAllFiles: this.$options.syncAllFiles };
 
-					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo);
+					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo, projectFilesConfig);
 
 					if (this.$options.debugBrk) {
 						this.$logger.info('Starting debugger...');
@@ -133,7 +133,7 @@ class TestExecutionService implements ITestExecutionService {
 		});
 	}
 
-	public async startKarmaServer(platform: string, projectData: IProjectData): Promise<void> {
+	public async startKarmaServer(platform: string, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void> {
 		platform = platform.toLowerCase();
 		this.platform = platform;
 
@@ -224,7 +224,7 @@ class TestExecutionService implements ITestExecutionService {
 						});
 
 					const liveSyncInfo: ILiveSyncInfo = { projectDir: projectData.projectDir, skipWatcher: !this.$options.watch || this.$options.justlaunch, watchAllFiles: this.$options.syncAllFiles };
-					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo);
+					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo, projectFilesConfig);
 				}
 			};
 

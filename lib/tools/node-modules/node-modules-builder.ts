@@ -8,7 +8,7 @@ export class NodeModulesBuilder implements INodeModulesBuilder {
 		private $nodeModulesDependenciesBuilder: INodeModulesDependenciesBuilder
 	) { }
 
-	public async prepareNodeModules(absoluteOutputPath: string, platform: string, lastModifiedTime: Date, projectData: IProjectData): Promise<void> {
+	public async prepareNodeModules(absoluteOutputPath: string, platform: string, lastModifiedTime: Date, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void> {
 		if (!this.$fs.exists(absoluteOutputPath)) {
 			// Force copying if the destination doesn't exist.
 			lastModifiedTime = null;
@@ -26,7 +26,7 @@ export class NodeModulesBuilder implements INodeModulesBuilder {
 		}
 
 		const npmPluginPrepare: NpmPluginPrepare = this.$injector.resolve(NpmPluginPrepare);
-		await npmPluginPrepare.preparePlugins(productionDependencies, platform, projectData);
+		await npmPluginPrepare.preparePlugins(productionDependencies, platform, projectData, projectFilesConfig);
 	}
 
 	public cleanNodeModules(absoluteOutputPath: string, platform: string): void {

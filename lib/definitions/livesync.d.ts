@@ -154,7 +154,7 @@ interface ILiveSyncService {
 	 * @param {ILiveSyncInfo} liveSyncData Describes the LiveSync operation - for which project directory is the operation and other settings.
 	 * @returns {Promise<void>}
 	 */
-	liveSync(deviceDescriptors: ILiveSyncDeviceInfo[], liveSyncData: ILiveSyncInfo): Promise<void>;
+	liveSync(deviceDescriptors: ILiveSyncDeviceInfo[], liveSyncData: ILiveSyncInfo, projectFilesConfig: IProjectFilesConfig): Promise<void>;
 
 	/**
 	 * Stops LiveSync operation for specified directory.
@@ -203,7 +203,7 @@ interface IFullSyncInfo {
 
 interface IPlatformLiveSyncService {
 	fullSync(syncInfo: IFullSyncInfo): Promise<ILiveSyncResultInfo>;
-	liveSyncWatchAction(device: Mobile.IDevice, liveSyncInfo: ILiveSyncWatchInfo): Promise<ILiveSyncResultInfo>;
+	liveSyncWatchAction(device: Mobile.IDevice, liveSyncInfo: ILiveSyncWatchInfo, projectFilesConfig: IProjectFilesConfig): Promise<ILiveSyncResultInfo>;
 	refreshApplication(projectData: IProjectData, liveSyncInfo: ILiveSyncResultInfo): Promise<void>;
 }
 

@@ -275,8 +275,8 @@ interface IAndroidProjectPropertiesManager {
 }
 
 interface ITestExecutionService {
-	startTestRunner(platform: string, projectData: IProjectData): Promise<void>;
-	startKarmaServer(platform: string, projectData: IProjectData): Promise<void>;
+	startTestRunner(platform: string, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void>;
+	startKarmaServer(platform: string, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void>;
 }
 
 /**

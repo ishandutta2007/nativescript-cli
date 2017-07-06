@@ -6,6 +6,7 @@ import * as semver from "semver";
 import { EventEmitter } from "events";
 import { AppFilesUpdater } from "./app-files-updater";
 import { attachAwaitDetach } from "../common/helpers";
+import { Configurations } from "../common/constants";
 import * as temp from "temp";
 temp.track();
 let clui = require("clui");
@@ -306,7 +307,10 @@ export class PlatformService extends EventEmitter implements IPlatformService {
 		}
 
 		if (!changesInfo || changesInfo.modulesChanged) {
-			await this.copyTnsModules(platform, projectData);
+			const projectFilesConfig: IProjectFilesConfig = {
+				configuration: appFilesUpdaterOptions.release ? Configurations.Release.toLowerCase() : Configurations.Debug.toLowerCase()
+			};
+			await this.copyTnsModules(platform, projectData, projectFilesConfig);
 		} else if (appFilesUpdaterOptions.bundle) {
 			let dependencies = this.$nodeModulesDependenciesBuilder.getProductionDependencies(projectData.projectDir);
 			for (let dependencyKey in dependencies) {
@@ -325,7 +329,11 @@ export class PlatformService extends EventEmitter implements IPlatformService {
 			excludedDirs.push(constants.TNS_MODULES_FOLDER_NAME);
 		}
 
-		this.$projectFilesManager.processPlatformSpecificFiles(directoryPath, platform, excludedDirs);
+		const projectFilesConfig: IProjectFilesConfig = {
+			configuration: appFilesUpdaterOptions.release ? Configurations.Release.toLowerCase() : Configurations.Debug.toLowerCase()
+		};
+
+		this.$projectFilesManager.processPlatformSpecificFiles(directoryPath, platform, projectFilesConfig, excludedDirs);
 
 		if (!changesInfo || changesInfo.configChanged || changesInfo.modulesChanged) {
 			await platformData.platformProjectService.processConfigurationFilesFromAppResources(appFilesUpdaterOptions.release, projectData);
@@ -364,7 +372,7 @@ export class PlatformService extends EventEmitter implements IPlatformService {
 		}
 	}
 
-	private async copyTnsModules(platform: string, projectData: IProjectData): Promise<void> {
+	private async copyTnsModules(platform: string, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void> {
 		let platformData = this.$platformsData.getPlatformData(platform, projectData);
 		let appDestinationDirectoryPath = path.join(platformData.appDestinationDirectoryPath, constants.APP_FOLDER_NAME);
 		let lastModifiedTime = this.$fs.exists(appDestinationDirectoryPath) ? this.$fs.getFsStats(appDestinationDirectoryPath).mtime : null;
@@ -372,7 +380,7 @@ export class PlatformService extends EventEmitter implements IPlatformService {
 		try {
 			let tnsModulesDestinationPath = path.join(appDestinationDirectoryPath, constants.TNS_MODULES_FOLDER_NAME);
 			// Process node_modules folder
-			await this.$nodeModulesBuilder.prepareNodeModules(tnsModulesDestinationPath, platform, lastModifiedTime, projectData);
+			await this.$nodeModulesBuilder.prepareNodeModules(tnsModulesDestinationPath, platform, lastModifiedTime, projectData, projectFilesConfig);
 		} catch (error) {
 			this.$logger.debug(error);
 			shell.rm("-rf", appDestinationDirectoryPath);
