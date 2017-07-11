@@ -114,7 +114,7 @@ class TestExecutionService implements ITestExecutionService {
 
 					const liveSyncInfo: ILiveSyncInfo = { projectDir: projectData.projectDir, skipWatcher: !this.$options.watch || this.$options.justlaunch, watchAllFiles: this.$options.syncAllFiles };
 
-					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo, projectFilesConfig);
+					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo);
 
 					if (this.$options.debugBrk) {
 						this.$logger.info('Starting debugger...');
@@ -224,7 +224,7 @@ class TestExecutionService implements ITestExecutionService {
 						});
 
 					const liveSyncInfo: ILiveSyncInfo = { projectDir: projectData.projectDir, skipWatcher: !this.$options.watch || this.$options.justlaunch, watchAllFiles: this.$options.syncAllFiles };
-					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo, projectFilesConfig);
+					await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo);
 				}
 			};
 

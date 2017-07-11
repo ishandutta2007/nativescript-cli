@@ -6,7 +6,7 @@ import * as semver from "semver";
 import { EventEmitter } from "events";
 import { AppFilesUpdater } from "./app-files-updater";
 import { attachAwaitDetach } from "../common/helpers";
-import { Configurations } from "../common/constants";
+
 import * as temp from "temp";
 temp.track();
 let clui = require("clui");
@@ -305,11 +305,8 @@ export class PlatformService extends EventEmitter implements IPlatformService {
 			this.copyAppResources(platform, projectData);
 			await platformData.platformProjectService.prepareProject(projectData, platformSpecificData);
 		}
-
+		const projectFilesConfig = helpers.getProjectFilesConfig(appFilesUpdaterOptions.release);
 		if (!changesInfo || changesInfo.modulesChanged) {
-			const projectFilesConfig: IProjectFilesConfig = {
-				configuration: appFilesUpdaterOptions.release ? Configurations.Release.toLowerCase() : Configurations.Debug.toLowerCase()
-			};
 			await this.copyTnsModules(platform, projectData, projectFilesConfig);
 		} else if (appFilesUpdaterOptions.bundle) {
 			let dependencies = this.$nodeModulesDependenciesBuilder.getProductionDependencies(projectData.projectDir);
@@ -328,10 +325,6 @@ export class PlatformService extends EventEmitter implements IPlatformService {
 		if (!changesInfo || !changesInfo.modulesChanged) {
 			excludedDirs.push(constants.TNS_MODULES_FOLDER_NAME);
 		}
-
-		const projectFilesConfig: IProjectFilesConfig = {
-			configuration: appFilesUpdaterOptions.release ? Configurations.Release.toLowerCase() : Configurations.Debug.toLowerCase()
-		};
 
 		this.$projectFilesManager.processPlatformSpecificFiles(directoryPath, platform, projectFilesConfig, excludedDirs);
 

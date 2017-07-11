@@ -69,10 +69,7 @@ export abstract class DebugPlatformCommand implements ICommand {
 			skipWatcher: !this.$options.watch || this.$options.justlaunch,
 			watchAllFiles: this.$options.syncAllFiles
 		};
-const projectFilesConfig: IProjectFilesConfig = {
-			configuration: this.$options.release ? Configurations.Release.toLowerCase() : Configurations.Debug.toLowerCase()
-		};
-		await this.$debugLiveSyncService.liveSync(deviceDescriptors, liveSyncInfo, projectFilesConfig);
+		await this.$debugLiveSyncService.liveSync(deviceDescriptors, liveSyncInfo);
 	}
 
 	public async getDeviceForDebug(): Promise<Mobile.IDevice> {

@@ -1,4 +1,4 @@
-import { ERROR_NO_VALID_SUBCOMMAND_FORMAT, Configurations } from "../common/constants";
+import { ERROR_NO_VALID_SUBCOMMAND_FORMAT } from "../common/constants";
 
 export class RunCommandBase implements ICommand {
 	protected platform: string;
@@ -116,10 +116,7 @@ export class RunCommandBase implements ICommand {
 			watchAllFiles: this.$options.syncAllFiles,
 			clean: this.$options.clean
 		};
-		const projectFilesConfig: IProjectFilesConfig = {
-			configuration: this.$options.release ? Configurations.Release.toLowerCase() : Configurations.Debug.toLowerCase()
-		};
-		await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo, projectFilesConfig);
+		await this.$liveSyncService.liveSync(deviceDescriptors, liveSyncInfo);
 	}
 }
 

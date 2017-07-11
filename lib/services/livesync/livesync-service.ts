@@ -34,10 +34,10 @@ export class LiveSyncService extends EventEmitter implements ILiveSyncService {
 	}
 
 	public async liveSync(deviceDescriptors: ILiveSyncDeviceInfo[],
-		liveSyncData: ILiveSyncInfo, projectFilesConfig: IProjectFilesConfig): Promise<void> {
+		liveSyncData: ILiveSyncInfo): Promise<void> {
 		const projectData = this.$projectDataService.getProjectData(liveSyncData.projectDir);
 		await this.$pluginsService.ensureAllDependenciesAreInstalled(projectData);
-		await this.liveSyncOperation(deviceDescriptors, liveSyncData, projectData, projectFilesConfig);
+		await this.liveSyncOperation(deviceDescriptors, liveSyncData, projectData);
 	}
 
 	public async stopLiveSync(projectDir: string, deviceIdentifiers?: string[]): Promise<void> {
@@ -117,7 +117,7 @@ export class LiveSyncService extends EventEmitter implements ILiveSyncService {
 
 	@hook("liveSync")
 	private async liveSyncOperation(deviceDescriptors: ILiveSyncDeviceInfo[],
-		liveSyncData: ILiveSyncInfo, projectData: IProjectData, projectFilesConfig: IProjectFilesConfig): Promise<void> {
+		liveSyncData: ILiveSyncInfo, projectData: IProjectData): Promise<void> {
 		// In case liveSync is called for a second time for the same projectDir.
 		const isAlreadyLiveSyncing = this.liveSyncProcessesInfo[projectData.projectDir] && !this.liveSyncProcessesInfo[projectData.projectDir].isStopped;
 		this.setLiveSyncProcessInfo(liveSyncData.projectDir, deviceDescriptors);
@@ -130,7 +130,7 @@ export class LiveSyncService extends EventEmitter implements ILiveSyncService {
 			// Should be set after prepare
 			this.$injector.resolve<DeprecatedUsbLiveSyncService>("usbLiveSyncService").isInitialized = true;
 
-			await this.startWatcher(projectData, liveSyncData, projectFilesConfig);
+			await this.startWatcher(projectData, liveSyncData);
 		}
 	}
 
@@ -272,7 +272,7 @@ export class LiveSyncService extends EventEmitter implements ILiveSyncService {
 		};
 	}
 
-	private async startWatcher(projectData: IProjectData, liveSyncData: ILiveSyncInfo, projectFilesConfig: IProjectFilesConfig): Promise<void> {
+	private async startWatcher(projectData: IProjectData, liveSyncData: ILiveSyncInfo): Promise<void> {
 		let pattern = [APP_FOLDER_NAME];
 
 		if (liveSyncData.watchAllFiles) {
@@ -338,7 +338,7 @@ export class LiveSyncService extends EventEmitter implements ILiveSyncService {
 										useLiveEdit: liveSyncData.useLiveEdit
 									};
 
-									const liveSyncResultInfo = await service.liveSyncWatchAction(device, settings, projectFilesConfig);
+									const liveSyncResultInfo = await service.liveSyncWatchAction(device, settings);
 									await this.refreshApplication(projectData, liveSyncResultInfo);
 								},
 									(device: Mobile.IDevice) => {
