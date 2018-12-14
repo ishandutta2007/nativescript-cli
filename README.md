@@ -453,3 +453,10 @@ This software is licensed under the Apache 2.0 license, quoted <a href="LICENSE"
 [Android SDK Build-tools 23.0.0]: http://developer.android.com/sdk/index.html
 [Android Support Repository]: http://developer.android.com/sdk/index.html
 ![](https://ga-beacon.appspot.com/UA-111455-24/nativescript/nativescript-cli?pixel)
+
+### Support:
+
+If you want the good work to continue please support us on
+
+* [PAYPAL](https://www.paypal.me/ishandutta2007)
+* [BITCOIN ADDRESS: 3LZazKXG18Hxa3LLNAeKYZNtLzCxpv1LyD](https://www.coinbase.com/join/5a8e4a045b02c403bc3a9c0c)
